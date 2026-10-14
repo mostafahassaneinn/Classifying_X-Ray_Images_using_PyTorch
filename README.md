@@ -1,4 +1,4 @@
-# Classifying_X-Ray_Images_using_PyTorch
+# Classifying X-Ray Images using PyTorch
 
 ## Background:
 Pneumonia is one of the leading respiratory illnesses worldwide, and its timely and accurate diagnosis is essential for effective treatment. Manually reviewing chest X-rays is a critical step in this process, and AI can provide valuable support by helping to expedite the assessment.
