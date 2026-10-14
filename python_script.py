@@ -1,30 +1,5 @@
-# Pneumonia is one of the leading respiratory illnesses worldwide, and its timely and accurate diagnosis is essential for effective treatment. 
-# Manually reviewing chest X-rays is a critical step in this process, and AI can provide valuable support by helping to expedite the assessment. 
-# as a consultant data scientist, I will test the ability of a deep learning model to distinguish pneumonia cases from normal images of lungs in chest X-rays.
-# By fine-tuning a pre-trained convolutional neural network, specifically the ResNet-18 model, the task is to classify X-ray images into two categories: normal lungs and those affected by pneumonia. 
-# I can leverage its already trained weights and get an accurate classifier trained faster and with fewer resources.
-
-## How to approach the project
-# 1. Load and adjust the ResNet-18 model
-    # Adjusting the final layer
-
-# 2. Write the training loop
-
-# 3. Train and evaluate your model
-    # Load and adjust the ResNet-18 model
-    # Start by loading the architecture and the pre-trained parameters of a ResNet-18 model. Freeze their gradients and change the final layer for binary classification.
-    # Write the training loop
-    # Write a training loop for fine-tuning your ResNet-18 model using appropriate loss function and the provided training data.
-    # Train and evaluate your model
-    # Run the training loop for 3 epochs updating only the parameters of your network meant for fine-tuning. Then calculate the accuracy and F1-score on the test set.
-    # Define a suitable loss criterion
-    # Define a suitable optimizer
-    # Evaluate the model
-  
-
 ##############################################################
-# Import required libraries
-# --------------------------------------------
+## Import required libraries
 # Data loading
 import random
 import numpy as np
@@ -40,17 +15,17 @@ import torch.optim as optim
 
 # Evaluate model
 from torchmetrics import Accuracy, F1Score
-# --------------------------------------------
+
 
 # Set random seeds for reproducibility
-torch.manual_seed(101010)
-np.random.seed(101010)
-random.seed(101010)
+torch.manual_seed(1234)
+np.random.seed(1234)
+random.seed(1234)
 
 import os
 import zipfile
 
-# Unzip the data folder
+# Unzip the data folder (Unfortunately the data is not available for reproducibility)
 if not os.path.exists('data/chestxrays'):
     with zipfile.ZipFile('data/chestxrays.zip', 'r') as zip_ref:
         zip_ref.extractall('data')
@@ -72,16 +47,13 @@ test_dataset = ImageFolder('data/chestxrays/test', transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=len(train_dataset) // 2, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=len(test_dataset))
 
-#--------------------------
-# Q1: Instantiate the model
-#--------------------------
+
+## Instantiate the model
 
 # Load the pre-trained ResNet-18 model
 resnet18 = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
 
-#--------------------------
-# Q2: Modify the model
-#--------------------------
+## Modify the model
 
 # Freeze the parameters of the model
 for param in resnet18.parameters():
@@ -90,9 +62,7 @@ for param in resnet18.parameters():
 # Modify the final layer for binary classification
 resnet18.fc = nn.Linear(resnet18.fc.in_features, 1)
 
-#------------------------------
-# Q3a: Define the training loop
-#------------------------------
+## Define the training loop
 
 # Model training/fine-tuning loop
 def train(model, train_loader, criterion, optimizer, num_epochs):
@@ -136,15 +106,13 @@ def train(model, train_loader, criterion, optimizer, num_epochs):
         print('Epoch [{}/{}], train loss: {:.4f}, train acc: {:.4f}'
               .format(epoch+1, num_epochs, train_loss, train_acc))
 
-
+## Outputs:
 # Epoch [1/3], train loss: 1.3915, train acc: 0.4567
 # Epoch [2/3], train loss: 0.8973, train acc: 0.4633
 # Epoch [3/3], train loss: 0.9199, train acc: 0.5033
 
-#-------------------------
-# Q3b: Fine-tune the model
-#-------------------------        
-        
+
+## Fine-tune the model     
 # Set the model to ResNet-18
 model = resnet18
 
@@ -153,9 +121,7 @@ optimizer = torch.optim.Adam(model.fc.parameters(), lr=0.01)
 criterion = torch.nn.BCEWithLogitsLoss()
 train(model, train_loader, criterion, optimizer, num_epochs=3)
 
-#-----------------------
-# Evaluation code
-#----------------------- 
+## Evaluation:
 
 # Set model to evaluation mode
 model = resnet18
